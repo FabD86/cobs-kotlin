@@ -63,6 +63,27 @@ internal class cobsTest {
     }
 
     @Test
+    fun encode130() {
+        val cobs = cobs()
+
+        val input = ByteArray(130)
+        for (i in 1 ..input.size)
+            input[i-1] = i.toByte()
+        input[128] = 0
+
+        val resultExpected = ByteArray(input.size + 2)
+
+        for (i in 1 ..resultExpected.size - 2)
+            resultExpected[i] = i.toByte()
+        resultExpected[0] = -127
+        resultExpected[129] = 2
+        resultExpected[131] = 0
+
+        val result = cobs.encode(input).toList()
+        assert(resultExpected.toList() == result)
+    }
+
+    @Test
     fun encode255() {
         val cobs = cobs()
 
@@ -155,6 +176,29 @@ internal class cobsTest {
         val resultExpected = byteArrayOf(1,0,1).toList()
         val result = cobs.decode(input).toList()
         assert(resultExpected == result)
+    }
+
+    @Test
+    fun decode130() {
+        val cobs = cobs()
+
+        val resultExpected = ByteArray(130)
+        for (i in 1 ..resultExpected.size)
+            resultExpected[i-1] = i.toByte()
+        resultExpected[128] = 0
+        resultExpected[129] = 0
+
+        val input = ByteArray(resultExpected.size + 2)
+
+        for (i in 1 ..input.size - 2)
+            input[i] = i.toByte()
+        input[0] = -127
+        input[129] = 1
+        input[129] = 1
+        input[131] = 0
+
+        val result = cobs.decode(input).toList()
+        assert(resultExpected.toList() == result)
     }
 
     @Test

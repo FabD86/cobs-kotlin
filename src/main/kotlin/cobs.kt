@@ -28,17 +28,17 @@ class cobs {
     fun decode(input:ByteArray):ByteArray{
         val result = input.toMutableList()
         var pointer = (result[0]-1).toUByte().toInt()
-        var jumpValue = result[0].toUByte().toByte()
+        var jumpValue = result[0].toUByte().toInt()
         result.removeAt(0)
         while (pointer < result.size -1)
         {
-            if (jumpValue == 255.toByte())
+            if (jumpValue == 255)
             {
-                jumpValue = (result[pointer].toUByte().toInt() - 1).toByte()
+                jumpValue = (result[pointer].toUByte().toInt() - 1)
                 result.removeAt(pointer)
             }
             else {
-                jumpValue = result[pointer].toUByte().toByte()
+                jumpValue = result[pointer].toUByte().toInt()
                 result[pointer] = 0
             }
 
