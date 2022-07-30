@@ -16,6 +16,10 @@ class cobs {
                 counter++
             }
 
+            if (result[pointerByte + counter] == 0.toByte() && counter == 255){
+                result.add(pointerByte + 255, 42.toByte())    // this is the next pointer byte the value doesn't matter
+            }
+
             result[pointerByte] = counter.toByte()
             pointerByte += counter
             counter = 1
@@ -30,14 +34,18 @@ class cobs {
         var pointer = (result[0]-1).toUByte().toInt()
         var jumpValue = result[0].toUByte().toInt()
         result.removeAt(0)
+        var delNext = false
         while (pointer < result.size -1)
         {
-            if (jumpValue == 255)
+            if (jumpValue == 255 || delNext)
             {
+                delNext = result[pointer] == 255.toByte()
+
                 jumpValue = (result[pointer].toUByte().toInt() - 1)
                 result.removeAt(pointer)
             }
             else {
+                delNext = false
                 jumpValue = result[pointer].toUByte().toInt()
                 result[pointer] = 0
             }
